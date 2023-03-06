@@ -18,8 +18,8 @@ export class ItownsGUI extends dat.GUI {
 
     constructor(view: itowns.View, options?: dat.GUIParams) {
         super(options);
-        this.colorGUI = this.addFolder('Color Layers');
-        this.elevationGUI = this.addFolder('Elevation Layers');
+        this.colorGUI = this.addFolder('Couches raster');
+        this.elevationGUI = this.addFolder('Couches terrain');
         this.colorGUI.hide();
         this.elevationGUI.hide();
         this.view = view;
@@ -43,7 +43,7 @@ export class ItownsGUI extends dat.GUI {
             layer.visible = value;
             this.view.notifyChange(layer);
         }));
-        folder.add({ opacity: layer.opacity }, 'opacity', 0.0, 1.0, 0.01)
+        folder.add({ opacity: layer.opacity }, 'opacité', 0.0, 1.0, 0.01)
         .onChange((value) => {
             layer.opacity = value;
             this.view.notifyChange(layer);
@@ -64,7 +64,7 @@ export class ItownsGUI extends dat.GUI {
         .onChange((value) => {
             layer.frozen = value;
         });
-        folder.add({ scale: layer.scale }, 'scale').min(1.0).max(20.0)
+        folder.add({ scale: layer.scale }, 'échelle').min(1.0).max(20.0)
         .onChange((value) => {
             layer.scale = value;
             this.view.notifyChange(layer);

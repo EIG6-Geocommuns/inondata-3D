@@ -19,11 +19,12 @@ const buildingSource = new itowns.WFSSource({
     crs: 'EPSG:4326', //
     zoom: { min: 14, max: 14 },
 });
+
 const waterSource = new itowns.FileSource({
-     url: 'https://raw.githubusercontent.com/iTowns/iTowns2-sample-data/master/croquis.kml',
+     url: `${window.location.href}tex/heightmap.jpg`,
      crs: 'EPSG:4326',
-     fetcher: itowns.Fetcher.xml,
-     parser: itowns.KMLParser.parse,
+     fetcher: itowns.Fetcher.texture,
+     parser: (data: any) => Promise.resolve({ height: data }),
 });
 
 function colorLayer(config: any) {
@@ -49,11 +50,18 @@ function main() {
 
     const viewerDiv = document.getElementById('viewerDiv') as HTMLDivElement;
     const view = new itowns.GlobeView(viewerDiv, placement);
-    const gui = new ItownsGUI(view);
+    const gui = new ItownsGUI(view, { autoPlace: false, width: 245 });
+    let element = document.createElement('div');
+    element.id = 'menuDiv';
+    element.appendChild(gui.domElement);
+    document.body.appendChild(element);
     // TODO: Setup loading screen
 
-    const orthoLayer = colorLayer(mapPlanIGN);
+    const orthoLayer = colorLayer(orthoIGN);
     view.addLayer(orthoLayer).then((layer) => gui.addLayer(layer));
+
+    const mapLayer = colorLayer(mapPlanIGN);
+    view.addLayer(mapLayer).then((layer) => gui.addLayer(layer));
 
     const worldTerrainLayer = terrainLayer(dtmSRTM3);
     view.addLayer(worldTerrainLayer).then((layer) => gui.addLayer(layer));

@@ -7,12 +7,15 @@ export interface WaterLayerOptions {
 }
 
 type TileNode = {
+    parent: TileNode,
     visible: boolean,
     layerUpdateState: { [id: string]: itowns.LayerUpdateState },
     getExtentsByProjection(crs: string): itowns.Extent[];
-}
+} & THREE.Object3D
 
-const Mat = THREE.ShaderMaterial;
+type WaterData = {
+    height: THREE.Texture
+}
 
 export class WaterLayer extends itowns.GeometryLayer {
     // Extended from `Layer`
@@ -25,6 +28,8 @@ export class WaterLayer extends itowns.GeometryLayer {
     // convert(data: any): any
     //private material: THREE.RawShaderMaterial
 
+    readonly isWaterLayer = true;
+
     constructor(id: string, config: WaterLayerOptions = {}) {
         super(id, new THREE.Group(), config);
         // GeometryLayer
@@ -33,15 +38,22 @@ export class WaterLayer extends itowns.GeometryLayer {
     }
 
     // From Layer (placeholder)
-    override convert(data: any) {
+    override convert(data: WaterData) {
         console.log('convert');
-        return data;
+        console.log(data);
+        const geometry = new THREE.PlaneGeometry(1, 1);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xffff00,
+            side: THREE.DoubleSide,
+        });
+        const plane = new THREE.Mesh(geometry, material);
+        return plane;
     }
 
     // From Layer
     override getData(from: any, to: any) {
-        console.log('getData');
-        return super.getData(from, to);
+        const data = super.getData(from, to);
+        return data;
     }
 
     // From View#addLayer:
@@ -73,7 +85,7 @@ export class WaterLayer extends itowns.GeometryLayer {
         //console.log(srcs);
     }
 
-    // layer = GeometryLayer
+    // layer = GeometryLayer (TODO: Ask someone: Why parameter then ?)
     // node = TileMesh
     update(context: any, layer: any, node: TileNode) {
         if (!node.visible) {
@@ -84,19 +96,18 @@ export class WaterLayer extends itowns.GeometryLayer {
             node.layerUpdateState[layer.id] = new itowns.LayerUpdateState();
         } else if (!node.layerUpdateState[layer.id].canTryUpdate()) {
             // TODO: node.link ???
+            return;
         }
 
+        // TODO: Ensures it does return at least one element ?
         const nodeExtents = node.getExtentsByProjection(layer.source.crs);
         const nodeZoom = nodeExtents[0].zoom;
-
-        // TODO: LayerUpdateState if necessary?
-        // [QB]: Necessary... It loop updates otherwise
 
         // Checks to prevent unecessary load of data
         // check if its tile level is equal to display level layer
         if (nodeZoom != layer.zoom.min) {
             // TODO: other checks to not load data
-            // !this.source.extentsInsideLimite(node.extent, nodeDest);
+            // !this.source.extentsInsideLimit(node.extent, nodeDest);
             node.layerUpdateState[layer.id].noMoreUpdatePossible();
             return;
         }
@@ -110,11 +121,27 @@ export class WaterLayer extends itowns.GeometryLayer {
             requester: node
         };
 
-        return context.scheduler.execute(command).then(function(meshes: any) {
+        return context.scheduler.execute(command)
+        .then(function(meshes: Array<THREE.Mesh>) {
             node.layerUpdateState[layer.id].noMoreUpdatePossible();
+            console.log('After command');
 
-            console.log(node.layerUpdateState[layer.id]);
-            console.log(nodeExtents[0]);
+            meshes.forEach((mesh) => {
+                if (!node.parent) {
+                    console.error('Missing parent WTF ?');
+                } else {
+                    // TODO: node.link.push ????
+                    console.log(node);
+                    mesh.matrixWorld = node.matrixWorld;
+                    mesh.position.x = node.position.x;
+                    mesh.position.y = node.position.y;
+                    mesh.position.z = node.position.z + 10;
+                    layer.object3d.add(mesh);
+                    console.log(mesh);
+                }
+                // mesh.layer = layer
+            });
+            //console.log(nodeExtents[0]);
         });
 
 

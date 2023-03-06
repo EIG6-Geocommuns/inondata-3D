@@ -17,5 +17,19 @@ body { margin: 0; overflow: hidden; height: 100%; }
     float: left;
     overflow-y: scroll;
 }
+#menuDiv {
+    position: absolute;
+    left: 10px;
+    top: 0px;
+    z-index: 0;
+}
+#menuDiv, .ac {
+/* Disable select DAT.gui */
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 2 !important;
+}
 
 canvas { display: block }
