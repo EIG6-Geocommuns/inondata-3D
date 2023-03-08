@@ -1,8 +1,18 @@
 import * as itowns from 'itowns';
+const itowns_widgets = require('itowns/widgets'); // FIXME: temporary hack
 import * as THREE from 'three';
 
 import ItownsGUI from './gui/DatTools';
 import JSONLayers from './layers/JSONLayers';
+
+// Initial location
+const center = new itowns.Coordinates('EPSG:4326', 5.395317, 43.460333);
+const placement = {
+    coord: new itowns.Coordinates('EPSG:4326', 5.395317, 43.460333),
+    range: 20000,
+    tilt: 20,
+    heading: 0
+};
 
 // Sources
 const buildingSource = new itowns.WFSSource({
@@ -78,16 +88,37 @@ function setupFeatureLayers(view: itowns.GlobeView, gui: ItownsGUI) {
     view.addLayer(buildingLayer);
 }
 
-function main() {
-    // Center of flood extent
-    const center = new itowns.Coordinates('EPSG:4326', 5.395317, 43.460333);
-    const placement = {
-        coord: new itowns.Coordinates('EPSG:4326', 5.395317, 43.460333),
-        range: 20000,
-        tilt: 20,
-        heading: 0
+function setupWidgets(view: itowns.GlobeView) {
+    const widgets = new itowns_widgets.Navigation(view);
+    const geocodingOptions = {
+        url: new URL(
+            'https://wxs.ign.fr/ayxvok72rcocdyn8xyvy32og/ols/apis/completion?text=&type=StreetAddress,' +
+            'PositionOfInterest',
+        ),
+        parser: (res: any) => {
+            const map = new Map();
+            res.results.forEach((location: any) => {
+                const coordinates = new itowns.Coordinates(
+                    'EPSG:4326',
+                    location.x, location.y
+                );
+                map.set(location.fulltext, coordinates);
+            });
+            return map;
+        },
+        onSelected: (coord: itowns.Coordinates) => {
+            view.controls?.lookAtCoordinate({
+                ...placement,
+                coord
+            });
+        },
     };
+    const searchbar = new itowns_widgets.Searchbar(view, geocodingOptions, {
+        placeHolder: 'Rechercher'
+    });
+}
 
+function main() {
     const viewerDiv = document.getElementById('viewerDiv') as HTMLDivElement;
     const view = new itowns.GlobeView(viewerDiv, placement);
 
@@ -100,6 +131,7 @@ function main() {
     // TODO: setup loading screen
     setupRasterLayers(view, gui);
     setupFeatureLayers(view, gui);
+    setupWidgets(view);
 }
 
 main();
