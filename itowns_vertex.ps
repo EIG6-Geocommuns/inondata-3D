@@ -1,0 +1,919 @@
+%!PS-Adobe-3.0
+%%Title: itowns_vertex.glsl
+%%For: QBouillaguet
+%%Creator: NVIM v0.6.1
+%%CreationDate: mer. mars 08 13:33:04 2023
+%%DocumentData: Clean8Bit
+%%Orientation: Portrait
+%%Pages: (atend)
+%%PageOrder: Ascend
+%%BoundingBox: 59 49 564 800
+%%DocumentMedia: A4 595 842 0 () ()
+%%DocumentNeededResources: font Courier
+%%+ font Courier-Bold
+%%+ font Courier-Oblique
+%%+ font Courier-BoldOblique
+%%DocumentSuppliedResources: procset VIM-Prolog 1.4 1
+%%+ encoding VIM-latin1 1.0 0
+%%Requirements: duplex collate color
+%%EndComments
+%%BeginDefaults
+%%PageResources: font Courier
+%%+ font Courier-Bold
+%%+ font Courier-Oblique
+%%+ font Courier-BoldOblique
+%%PageMedia: A4
+%%EndDefaults
+%%BeginProlog
+%%BeginResource: procset VIM-Prolog
+%%BeginDocument: /usr/share/nvim/runtime/print/prolog.ps
+%!PS-Adobe-3.0 Resource-ProcSet
+%%Title: VIM-Prolog
+%%Version: 1.4 1
+%%EndComments
+% Editing of this file is NOT RECOMMENDED.  You run a very good risk of causing
+% all PostScript printing from VIM failing if you do.  PostScript is not called
+% a write-only language for nothing!
+/packedarray where not{userdict begin/setpacking/pop load def/currentpacking
+false def end}{pop}ifelse/CP currentpacking def true setpacking
+/bd{bind def}bind def/ld{load def}bd/ed{exch def}bd/d/def ld
+/db{dict begin}bd/cde{currentdict end}bd
+/T true d/F false d
+/SO null d/sv{/SO save d}bd/re{SO restore}bd
+/L2 systemdict/languagelevel 2 copy known{get exec}{pop pop 1}ifelse 2 ge d
+/m/moveto ld/s/show ld /ms{m s}bd /g/setgray ld/r/setrgbcolor ld/sp{showpage}bd
+/gs/gsave ld/gr/grestore ld/cp/currentpoint ld
+/ul{gs UW setlinewidth cp UO add 2 copy newpath m 3 1 roll add exch lineto
+stroke gr}bd
+/bg{gs r cp BO add 4 -2 roll rectfill gr}bd
+/sl{90 rotate 0 exch translate}bd
+L2{
+/sspd{mark exch{setpagedevice}stopped cleartomark}bd
+/nc{1 db/NumCopies ed cde sspd}bd
+/sps{3 db/Orientation ed[3 1 roll]/PageSize ed/ImagingBBox null d cde sspd}bd
+/dt{2 db/Tumble ed/Duplex ed cde sspd}bd
+/c{1 db/Collate ed cde sspd}bd
+}{
+/nc{/#copies ed}bd
+/sps{statusdict/setpage get exec}bd
+/dt{statusdict/settumble 2 copy known{get exec}{pop pop pop}ifelse
+statusdict/setduplexmode 2 copy known{get exec}{pop pop pop}ifelse}bd
+/c{pop}bd
+}ifelse
+/ffs{findfont exch scalefont d}bd/sf{setfont}bd
+/ref{1 db findfont dup maxlength dict/NFD ed{exch dup/FID ne{exch NFD 3 1 roll
+put}{pop pop}ifelse}forall/Encoding findresource dup length 256 eq{NFD/Encoding
+3 -1 roll put}{pop}ifelse NFD dup/FontType get 3 ne{/CharStrings}{/CharProcs}
+ifelse 2 copy known{2 copy get dup maxlength dict copy[/questiondown/space]{2
+copy known{2 copy get 2 index/.notdef 3 -1 roll put pop exit}if pop}forall put
+}{pop pop}ifelse dup NFD/FontName 3 -1 roll put NFD definefont pop end}bd
+CP setpacking
+(\004)cvn{}bd
+% vim:ff=unix:
+%%EOF
+%%EndDocument
+%%EndResource
+%%BeginResource: encoding VIM-latin1
+%%BeginDocument: /usr/share/nvim/runtime/print/latin1.ps
+%!PS-Adobe-3.0 Resource-Encoding
+%%Title: VIM-latin1
+%%Version: 1.0 0
+%%EndComments
+/VIM-latin1[
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quotesingle
+/parenleft /parenright /asterisk /plus /comma /minus /period /slash
+/zero /one /two /three /four /five /six /seven
+/eight /nine /colon /semicolon /less /equal /greater /question
+/at /A /B /C /D /E /F /G
+/H /I /J /K /L /M /N /O
+/P /Q /R /S /T /U /V /W
+/X /Y /Z /bracketleft /backslash /bracketright /asciicircum /underscore
+/grave /a /b /c /d /e /f /g
+/h /i /j /k /l /m /n /o
+/p /q /r /s /t /u /v /w
+/x /y /z /braceleft /bar /braceright /asciitilde /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/space /exclamdown /cent /sterling /currency /yen /brokenbar /section
+/dieresis /copyright /ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron
+/degree /plusminus /twosuperior /threesuperior /acute /mu /paragraph /periodcentered
+/cedilla /onesuperior /ordmasculine /guillemotright /onequarter /onehalf /threequarters /questiondown
+/Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis
+/Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply
+/Oslash /Ugrave /Uacute /Ucircumflex /Udieresis /Yacute /Thorn /germandbls
+/agrave /aacute /acircumflex /atilde /adieresis /aring /ae /ccedilla
+/egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis
+/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide
+/oslash /ugrave /uacute /ucircumflex /udieresis /yacute /thorn /ydieresis]
+/Encoding defineresource pop
+% vim:ff=unix:
+%%EOF
+%%EndDocument
+%%EndResource
+%%EndProlog
+%%BeginSetup
+595 842 0 sps
+1 nc
+T F dt
+T c
+%%IncludeResource: font Courier
+/_F0 /VIM-latin1 /Courier ref
+/F0 10 /_F0 ffs
+%%IncludeResource: font Courier-Bold
+/_F1 /VIM-latin1 /Courier-Bold ref
+/F1 10 /_F1 ffs
+%%IncludeResource: font Courier-Oblique
+/_F2 /VIM-latin1 /Courier-Oblique ref
+/F2 10 /_F2 ffs
+%%IncludeResource: font Courier-BoldOblique
+/_F3 /VIM-latin1 /Courier-BoldOblique ref
+/F3 10 /_F3 ffs
+/UO -1 d
+/UW 0.5 d
+/BO -2.5 d
+%%EndSetup
+%%Page: 1 1
+%%BeginPageSetup
+sv
+0 g
+F0 sf
+%%EndPageSetup
+F1 sf
+(itowns_vertex.glsl                                                            Page 1)59.5 792.4 ms
+F0 sf
+0 0.251 0.502 r
+(attribute)59.5 772.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(vec3)s
+0 g
+( position;)s
+0 0.251 0.502 r
+(uniform)59.5 762.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(mat4)s
+0 g
+( projectionMatrix;)s
+0 0.251 0.502 r
+(uniform)59.5 752.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(mat4)s
+0 g
+( modelViewMatrix;)s
+0.376 0.376 1 r
+(#if NUM_VS_TEXTURES > 0)59.5 732.4 ms
+0 0.251 0.502 r
+(struct)59.5 722.4 ms
+0 g
+( )s
+0.753 0 0 r
+(Layer)s
+0 g
+( {)s
+(    )59.5 712.4 ms
+0 0.251 0.502 r
+(float)s
+0 g
+( scale;)s
+(    )59.5 702.4 ms
+0 0.251 0.502 r
+(float)s
+0 g
+( bias;)s
+(    )59.5 692.4 ms
+0 0.251 0.502 r
+(int)s
+0 g
+( mode;)s
+(    )59.5 682.4 ms
+0 0.251 0.502 r
+(float)s
+0 g
+( zmin;)s
+(    )59.5 672.4 ms
+0 0.251 0.502 r
+(float)s
+0 g
+( zmax;)s
+(};)59.5 662.4 ms
+0 0.251 0.502 r
+(uniform)59.5 642.4 ms
+0 g
+( Layer       elevationLayers[NUM_VS_TEXTURES];)s
+0 0.251 0.502 r
+(uniform)59.5 632.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(sampler2D)s
+0 g
+(   elevationTextures[NUM_VS_TEXTURES];)s
+0 0.251 0.502 r
+(uniform)59.5 622.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(vec4)s
+0 g
+(        elevationOffsetScales[NUM_VS_TEXTURES];)s
+0 0.251 0.502 r
+(uniform)59.5 612.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(int)s
+0 g
+(         elevationTextureCount;)s
+0 0.251 0.502 r
+(uniform)59.5 602.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(float)s
+0 g
+(       geoidHeight;)s
+0 0.251 0.502 r
+(highp)59.5 582.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(float)s
+0 g
+( decode32\()s
+0 0.251 0.502 r
+(highp)s
+0 g
+( )s
+0 0.251 0.502 r
+(vec4)s
+0 g
+( rgba\) {)s
+(    )59.5 572.4 ms
+0 0.251 0.502 r
+(highp)s
+0 g
+( )s
+0 0.251 0.502 r
+(float)s
+0 g
+( Sign = )s
+0.502 0.502 0 r
+(1.0)s
+0 g
+( - )s
+0.753 0 0 r
+(step)s
+0 g
+(\()s
+0.502 0.502 0 r
+(128.0)s
+0 g
+(, rgba[)s
+0.502 0.502 0 r
+(0)s
+0 g
+(]\)*)s
+0.502 0.502 0 r
+(2.0)s
+0 g
+(;)s
+(    )59.5 562.4 ms
+0 0.251 0.502 r
+(highp)s
+0 g
+( )s
+0 0.251 0.502 r
+(float)s
+0 g
+( Exponent = )s
+0.502 0.502 0 r
+(2.0)s
+0 g
+( * )s
+0.753 0 0 r
+(mod)s
+0 g
+(\(rgba[)s
+0.502 0.502 0 r
+(0)s
+0 g
+(], )s
+0.502 0.502 0 r
+(128.0)s
+0 g
+(\) + )s
+0.753 0 0 r
+(step)s
+0 g
+(\()s
+0.502 0.502 0 r
+(128.0)s
+0 g
+(, rgba[)s
+0.502 0.502 0 r
+(1)s
+0 g
+(]\) - )s
+0.502 0.502 0 r
+(127.0)s
+0 g
+(;)s
+(    )59.5 552.4 ms
+0 0.251 0.502 r
+(highp)s
+0 g
+( )s
+0 0.251 0.502 r
+(float)s
+0 g
+( Mantissa = )s
+0.753 0 0 r
+(mod)s
+0 g
+(\(rgba[)s
+0.502 0.502 0 r
+(1)s
+0 g
+(], )s
+0.502 0.502 0 r
+(128.0)s
+0 g
+(\)*)s
+0.502 0.502 0 r
+(65536.0)s
+0 g
+( + rgba[)s
+0.502 0.502 0 r
+(2)s
+0 g
+(]*)s
+0.502 0.502 0 r
+(256.0)s
+0 g
+( +rgba[)s
+0.502 0.502 0 r
+(3)s
+0 g
+(] + )s
+0 0.251 0.502 r
+(fl)s
+(oat)59.5 542.4 ms
+0 g
+(\()s
+0.502 0.502 0 r
+(0x800000)s
+0 g
+(\);)s
+(    )59.5 532.4 ms
+0 0.251 0.502 r
+(highp)s
+0 g
+( )s
+0 0.251 0.502 r
+(float)s
+0 g
+( Result = Sign * )s
+0.753 0 0 r
+(exp2)s
+0 g
+(\(Exponent\) * \(Mantissa * )s
+0.753 0 0 r
+(exp2)s
+0 g
+(\(-)s
+0.502 0.502 0 r
+(23.0)s
+0 g
+( \)\);)s
+(    )59.5 522.4 ms
+0 0.502 0 r
+(return)s
+0 g
+( Result;)s
+(})59.5 512.4 ms
+0 0.251 0.502 r
+(float)59.5 492.4 ms
+0 g
+( getElevationMode\()s
+0 0.251 0.502 r
+(vec2)s
+0 g
+( uv, )s
+0 0.251 0.502 r
+(sampler2D)s
+0 g
+( tex, )s
+0 0.251 0.502 r
+(int)s
+0 g
+( mode\) {)s
+(    )59.5 482.4 ms
+0 0.502 0 r
+(if)s
+0 g
+( \(mode == ELEVATION_RGBA\))s
+(        )59.5 472.4 ms
+0 0.502 0 r
+(return)s
+0 g
+( decode32\()s
+0.753 0 0 r
+(texture2D)s
+0 g
+(\( tex, uv \))s
+0.753 0 0 r
+(.abgr)s
+0 g
+( * )s
+0.502 0.502 0 r
+(255.0)s
+0 g
+(\);)s
+(    )59.5 462.4 ms
+0 0.502 0 r
+(if)s
+0 g
+( \(mode == ELEVATION_DATA || mode == ELEVATION_COLOR\))s
+0.376 0.376 1 r
+(#if defined\(WEBGL2\))59.5 452.4 ms
+0 g
+(        )59.5 442.4 ms
+0 0.502 0 r
+(return)s
+0 g
+( )s
+0.753 0 0 r
+(texture2D)s
+0 g
+(\( tex, uv \))s
+0.753 0 0 r
+(.r)s
+0 g
+(;)s
+0.376 0.376 1 r
+(#else)59.5 432.4 ms
+0 g
+(    )59.5 422.4 ms
+0 0.502 0 r
+(return)s
+0 g
+( )s
+0.753 0 0 r
+(texture2D)s
+0 g
+(\( tex, uv \))s
+0.753 0 0 r
+(.w)s
+0 g
+(;)s
+0.376 0.376 1 r
+(#endif)59.5 412.4 ms
+0 g
+(    )59.5 402.4 ms
+0 0.502 0 r
+(return)s
+0 g
+( )s
+0.502 0.502 0 r
+(0.)s
+0 g
+(;)s
+(})59.5 392.4 ms
+0 0.251 0.502 r
+(float)59.5 372.4 ms
+0 g
+( getElevation\()s
+0 0.251 0.502 r
+(vec2)s
+0 g
+( uv, )s
+0 0.251 0.502 r
+(sampler2D)s
+0 g
+( tex, )s
+0 0.251 0.502 r
+(vec4)s
+0 g
+( offsetScale, Layer layer\) {)s
+(    uv = uv * offsetScale)59.5 362.4 ms
+0.753 0 0 r
+(.zw)s
+0 g
+( + offsetScale)s
+0.753 0 0 r
+(.xy)s
+0 g
+(;)s
+(    )59.5 352.4 ms
+0 0.251 0.502 r
+(float)s
+0 g
+( d = getElevationMode\(uv, tex, layer.mode\);)s
+(    )59.5 342.4 ms
+0 0.502 0 r
+(if)s
+0 g
+( \(d < layer.zmin || d > layer.zmax\) d = )s
+0.502 0.502 0 r
+(0.)s
+0 g
+(;)s
+(    )59.5 332.4 ms
+0 0.502 0 r
+(return)s
+0 g
+( d * layer.scale + layer.bias;)s
+(})59.5 322.4 ms
+0.376 0.376 1 r
+(#endif)59.5 312.4 ms
+(#ifdef USE_LOGDEPTHBUF)59.5 292.4 ms
+(#ifdef USE_LOGDEPTHBUF_EXT)59.5 282.4 ms
+0 0.251 0.502 r
+(varying)59.5 272.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(float)s
+0 g
+( vFragDepth;)s
+0 0.251 0.502 r
+(varying)59.5 262.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(float)s
+0 g
+( vIsPerspective;)s
+0.376 0.376 1 r
+(#else)59.5 252.4 ms
+0 0.251 0.502 r
+(uniform)59.5 242.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(float)s
+0 g
+( logDepthBufFC;)s
+0.376 0.376 1 r
+(#endif)59.5 232.4 ms
+(#endif)59.5 222.4 ms
+0 0.251 0.502 r
+(attribute)59.5 212.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(vec2)s
+0 g
+(      uv_0;)s
+0.376 0.376 1 r
+(#if NUM_CRS > 1)59.5 202.4 ms
+0 0.251 0.502 r
+(attribute)59.5 192.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(float)s
+0 g
+(     uv_1;)s
+0.376 0.376 1 r
+(#endif)59.5 182.4 ms
+0 0.251 0.502 r
+(attribute)59.5 172.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(vec3)s
+0 g
+(      normal;)s
+0 0.251 0.502 r
+(uniform)59.5 162.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(mat4)s
+0 g
+( modelMatrix;)s
+0 0.251 0.502 r
+(uniform)59.5 152.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(bool)s
+0 g
+( lightingEnabled;)s
+0 0.251 0.502 r
+(varying)59.5 142.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(vec2)s
+0 g
+( vHighPrecisionZW;)s
+0.376 0.376 1 r
+(#if MODE == MODE_FINAL)59.5 132.4 ms
+(#ifdef USE_FOG)59.5 122.4 ms
+0 0.251 0.502 r
+(varying)59.5 112.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(float)s
+0 g
+( vFogDepth;)s
+0.376 0.376 1 r
+(#endif)59.5 102.4 ms
+0 0.251 0.502 r
+(varying)59.5 92.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(vec3)s
+0 g
+(        vUv;)s
+0 0.251 0.502 r
+(varying)59.5 82.4 ms
+0 g
+( )s
+0 0.251 0.502 r
+(vec3)s
+0 g
+(        vNormal;)s
+0.376 0.376 1 r
+(#endif)59.5 72.4 ms
+re sp
+%%PageTrailer
+%%Page: 2 2
+%%BeginPageSetup
+sv
+0 g
+F0 sf
+%%EndPageSetup
+F1 sf
+(itowns_vertex.glsl                                                            Page 2)59.5 792.4 ms
+F0 sf
+0 0.251 0.502 r
+(void)59.5 772.4 ms
+0 g
+( main\(\) {)s
+(    )59.5 762.4 ms
+0 0.251 0.502 r
+(vec2)s
+0 g
+( uv = )s
+0 0.251 0.502 r
+(vec2)s
+0 g
+(\(uv_0)s
+0.753 0 0 r
+(.x)s
+0 g
+(, )s
+0.502 0.502 0 r
+(1.0)s
+0 g
+( - uv_0)s
+0.753 0 0 r
+(.y)s
+0 g
+(\);)s
+(    )59.5 752.4 ms
+0 0.251 0.502 r
+(vec3)s
+0 g
+( transformed = )s
+0 0.251 0.502 r
+(vec3)s
+0 g
+(\( position \);)s
+0.376 0.376 1 r
+(#if NUM_VS_TEXTURES > 0)59.5 742.4 ms
+0 g
+(    )59.5 732.4 ms
+0 0.502 0 r
+(if)s
+0 g
+(\(elevationTextureCount > )s
+0.502 0.502 0 r
+(0)s
+0 g
+(\) {)s
+(        )59.5 722.4 ms
+0 0.251 0.502 r
+(float)s
+0 g
+( elevation = getElevation\(uv, elevationTextures[)s
+0.502 0.502 0 r
+(0)s
+0 g
+(], elevationOffsetScal)s
+(es[)59.5 712.4 ms
+0.502 0.502 0 r
+(0)s
+0 g
+(], elevationLayers[)s
+0.502 0.502 0 r
+(0)s
+0 g
+(]\);)s
+(        transformed += elevation * normal;)59.5 702.4 ms
+(    })59.5 692.4 ms
+0.376 0.376 1 r
+(#endif)59.5 682.4 ms
+0 g
+(    transformed += geoidHeight * normal;)59.5 662.4 ms
+(    )59.5 652.4 ms
+0 0.251 0.502 r
+(vec4)s
+0 g
+( mvPosition = )s
+0 0.251 0.502 r
+(vec4)s
+0 g
+(\( transformed, )s
+0.502 0.502 0 r
+(1.0)s
+0 g
+( \);)s
+0.376 0.376 1 r
+(#ifdef USE_INSTANCING)59.5 642.4 ms
+0 g
+(    mvPosition = instanceMatrix * mvPosition;)59.5 632.4 ms
+0.376 0.376 1 r
+(#endif)59.5 622.4 ms
+0 g
+(    mvPosition = modelViewMatrix * mvPosition;)59.5 612.4 ms
+(    )59.5 602.4 ms
+0.753 0 0 r
+(gl_Position)s
+0 g
+( = projectionMatrix * mvPosition;)s
+0.376 0.376 1 r
+(#ifdef USE_LOGDEPTHBUF)59.5 592.4 ms
+(#ifdef USE_LOGDEPTHBUF_EXT)59.5 582.4 ms
+0 g
+(    vFragDepth = )59.5 572.4 ms
+0.502 0.502 0 r
+(1.0)s
+0 g
+( + )s
+0.753 0 0 r
+(gl_Position.w)s
+0 g
+(;)s
+(    vIsPerspective = )59.5 562.4 ms
+0 0.251 0.502 r
+(float)s
+0 g
+(\( isPerspectiveMatrix\( projectionMatrix \) \);)s
+0.376 0.376 1 r
+(#else)59.5 552.4 ms
+0 g
+(    )59.5 542.4 ms
+0 0.502 0 r
+(if)s
+0 g
+( \( isPerspectiveMatrix\( projectionMatrix \) \) {)s
+(        )59.5 532.4 ms
+0.753 0 0 r
+(gl_Position.z)s
+0 g
+( = )s
+0.753 0 0 r
+(log2)s
+0 g
+(\( )s
+0.753 0 0 r
+(max)s
+0 g
+(\( EPSILON, )s
+0.753 0 0 r
+(gl_Position.w)s
+0 g
+( + )s
+0.502 0.502 0 r
+(1.0)s
+0 g
+( \) \) * logDepthBufFC )s
+(- )59.5 522.4 ms
+0.502 0.502 0 r
+(1.0)s
+0 g
+(;)s
+(        )59.5 512.4 ms
+0.753 0 0 r
+(gl_Position.z)s
+0 g
+( *= )s
+0.753 0 0 r
+(gl_Position.w)s
+0 g
+(;)s
+(    })59.5 502.4 ms
+0.376 0.376 1 r
+(#endif)59.5 492.4 ms
+(#endif)59.5 482.4 ms
+0 g
+(    vHighPrecisionZW = )59.5 472.4 ms
+0.753 0 0 r
+(gl_Position.zw)s
+0 g
+(;)s
+0.376 0.376 1 r
+(#if MODE == MODE_FINAL)59.5 462.4 ms
+(#ifdef USE_FOG)59.5 452.4 ms
+0 g
+(    vFogDepth = - mvPosition)59.5 442.4 ms
+0.753 0 0 r
+(.z)s
+0 g
+(;)s
+0.376 0.376 1 r
+(#endif)59.5 432.4 ms
+(#if NUM_CRS > 1)59.5 422.4 ms
+0 g
+(    vUv = )59.5 412.4 ms
+0 0.251 0.502 r
+(vec3)s
+0 g
+(\(uv_0, \(uv_1 > )s
+0.502 0.502 0 r
+(0.)s
+0 g
+(\) ? uv_1 : uv_0)s
+0.753 0 0 r
+(.y)s
+0 g
+(\); )s
+1 1 0 r
+(// set uv_1 = uv_0 if uv_1 is und)s
+(efined)59.5 402.4 ms
+0.376 0.376 1 r
+(#else)59.5 382.4 ms
+0 g
+(    vUv = )59.5 372.4 ms
+0 0.251 0.502 r
+(vec3)s
+0 g
+(\(uv_0, )s
+0.502 0.502 0 r
+(0.0)s
+0 g
+(\);)s
+0.376 0.376 1 r
+(#endif)59.5 362.4 ms
+0 g
+(    vNormal = )59.5 352.4 ms
+0.753 0 0 r
+(normalize)s
+0 g
+( \( )s
+0 0.251 0.502 r
+(mat3)s
+0 g
+(\( modelMatrix[)s
+0.502 0.502 0 r
+(0)s
+0 g
+(])s
+0.753 0 0 r
+(.xyz)s
+0 g
+(, modelMatrix[)s
+0.502 0.502 0 r
+(1)s
+0 g
+(])s
+0.753 0 0 r
+(.xyz)s
+0 g
+(, modelMatrix[)s
+0.502 0.502 0 r
+(2)59.5 342.4 ms
+0 g
+(])s
+0.753 0 0 r
+(.xyz)s
+0 g
+( \) * normal \);)s
+0.376 0.376 1 r
+(#endif)59.5 332.4 ms
+0 g
+(})59.5 322.4 ms
+re sp
+%%PageTrailer
+%%Trailer
+%%Pages: 2
+%%EOF
+

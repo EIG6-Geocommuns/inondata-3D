@@ -1,6 +1,8 @@
 import * as itowns from 'itowns';
 import * as THREE from 'three';
 
+import { MeshTest } from '../objects/MeshTest';
+
 export interface WaterLayerOptions {
     source?: itowns.Source,
     zoom?: { max?: number, min?: number }
@@ -11,7 +13,7 @@ type TileNode = {
     visible: boolean,
     layerUpdateState: { [id: string]: itowns.LayerUpdateState },
     getExtentsByProjection(crs: string): itowns.Extent[];
-} & THREE.Mesh
+} & THREE.Mesh<THREE.BufferGeometry, THREE.RawShaderMaterial>
 
 type WaterData = {
     height: THREE.Texture
@@ -131,11 +133,14 @@ export class WaterLayer extends itowns.GeometryLayer {
                 color: 0xffff00,
                 side: THREE.DoubleSide,
             });
-            const plane = new THREE.Mesh(geometry, material);
-            plane.position.z += 10000;
-            layer.object3d.add(plane);
-            console.log(geometry);
-            console.log(plane);
+            //const mesh = new THREE.Mesh(geometry, material);
+            const mesh = new MeshTest(geometry);
+            mesh.matrixWorld = node.matrixWorld;
+            layer.object3d.add(mesh);
+            console.log(node.geometry);
+            console.log(node.material);
+            console.log(node.material.defines);
+            console.log(mesh);
 
             //meshes.forEach((mesh) => {
             //    if (!node.parent) {
