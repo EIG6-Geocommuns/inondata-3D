@@ -1,0 +1,139 @@
+{
+    "id": "Map_PLANIGN",
+    "source": {
+        "url": "https://wxs.ign.fr/essentiels/geoportail/wmts",
+        "crs": "EPSG:3857",
+        "networkOptions": {
+            "crossOrigin": "anonymous"
+        },
+        "format": "image/png",
+        "attribution" : {
+            "name": "IGN",
+            "url": "http://www.ign.fr/"
+        },
+        "name": "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
+        "tileMatrixSet": "PM",
+        "tileMatrixSetLimits": {
+            "0": {
+                "minTileRow": 0,
+                "maxTileRow": 1,
+                "minTileCol": 0,
+                "maxTileCol": 0
+            },
+            "1": {
+                "minTileRow": 0,
+                "maxTileRow": 2,
+                "minTileCol": 0,
+                "maxTileCol": 2
+            },
+            "2": {
+                "minTileRow": 0,
+                "maxTileRow": 4,
+                "minTileCol": 0,
+                "maxTileCol": 4
+            },
+            "3": {
+                "minTileRow": 0,
+                "maxTileRow": 8,
+                "minTileCol": 0,
+                "maxTileCol": 8
+            },
+            "4": {
+                "minTileRow": 0,
+                "maxTileRow": 16,
+                "minTileCol": 0,
+                "maxTileCol": 16
+            },
+            "5": {
+                "minTileRow": 0,
+                "maxTileRow": 32,
+                "minTileCol": 0,
+                "maxTileCol": 32
+            },
+            "6": {
+                "minTileRow": 0,
+                "maxTileRow": 64,
+                "minTileCol": 0,
+                "maxTileCol": 64
+            },
+            "7": {
+                "minTileRow": 0,
+                "maxTileRow": 128,
+                "minTileCol": 0,
+                "maxTileCol": 128
+            },
+            "8": {
+                "minTileRow": 80,
+                "maxTileRow": 144,
+                "minTileCol": 80,
+                "maxTileCol": 168
+            },
+            "9": {
+                "minTileRow": 168,
+                "maxTileRow": 288,
+                "minTileCol": 160,
+                "maxTileCol": 336
+            },
+            "10": {
+                "minTileRow": 336,
+                "maxTileRow": 576,
+                "minTileCol": 328,
+                "maxTileCol": 672
+            },
+            "11": {
+                "minTileRow": 680,
+                "maxTileRow": 1152,
+                "minTileCol": 664,
+                "maxTileCol": 1344
+            },
+            "12": {
+                "minTileRow": 1368,
+                "maxTileRow": 2304,
+                "minTileCol": 1328,
+                "maxTileCol": 2688
+            },
+            "13": {
+                "minTileRow": 2736,
+                "maxTileRow": 4600,
+                "minTileCol": 2656,
+                "maxTileCol": 5376
+            },
+            "14": {
+                "minTileRow": 5472,
+                "maxTileRow": 9200,
+                "minTileCol": 5312,
+                "maxTileCol": 10744
+            },
+            "15": {
+                "minTileRow": 10952,
+                "maxTileRow": 18392,
+                "minTileCol": 10624,
+                "maxTileCol": 21480
+            },
+            "16": {
+                "minTileRow": 21904,
+                "maxTileRow": 36784,
+                "minTileCol": 21248,
+                "maxTileCol": 42952
+            },
+            "17": {
+                "minTileRow": 43816,
+                "maxTileRow": 73568,
+                "minTileCol": 42496,
+                "maxTileCol": 85904
+            },
+            "18": {
+                "minTileRow": 87640,
+                "maxTileRow": 147128,
+                "minTileCol": 85000,
+                "maxTileCol": 171808
+            },
+            "19": {
+                "minTileRow": 175288,
+                "maxTileRow": 294248,
+                "minTileCol": 170008,
+                "maxTileCol": 343616
+            }
+        }
+    }
+}
