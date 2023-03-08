@@ -1,4 +1,5 @@
 import * as itowns from 'itowns';
+const itowns_widgets: any = require('itowns/widgets'); /* FIXME: ugly import */
 import * as THREE from 'three';
 
 import { ItownsGUI } from './GUI/DatTools';
@@ -46,6 +47,7 @@ function main() {
         coord: new itowns.Coordinates('EPSG:4326', 5.395317, 43.460333),
         range: 20000,
         tilt: 20,
+        heading: 0
     };
 
     const viewerDiv = document.getElementById('viewerDiv') as HTMLDivElement;
@@ -93,6 +95,34 @@ function main() {
         zoom: { min: 12 }
     });
     view.addLayer(waterLayer);
+
+    const widgets = new itowns_widgets.Navigation(view);
+    const geocodingOptions = {
+        url: new URL(
+            'https://wxs.ign.fr/ayxvok72rcocdyn8xyvy32og/ols/apis/completion?text=&type=StreetAddress,' +
+            'PositionOfInterest',
+        ),
+        parser: (res: any) => {
+            const map = new Map();
+            res.results.forEach((location: any) => {
+                const coordinates = new itowns.Coordinates(
+                    'EPSG:4326',
+                    location.x, location.y
+                );
+                map.set(location.fulltext, coordinates);
+            });
+            return map;
+        },
+        onSelected: (coord: itowns.Coordinates) => {
+            view.controls?.lookAtCoordinate({
+                ...placement,
+                coord
+            });
+        },
+    };
+    const searchbar = new itowns_widgets.Searchbar(view, geocodingOptions, {
+        placeHolder: 'Rechercher'
+    });
 }
 
 main();
