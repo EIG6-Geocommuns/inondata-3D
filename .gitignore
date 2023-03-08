@@ -1,0 +1,13 @@
+# Build
+public/libs/
+
+# Javascript & Typescript
+node_modules/
+
+# Vim
+[._]*.sw[a-p]
+[._]sw[a-p]
+Session.vim
+*~
+tags
+[._]*.un~
