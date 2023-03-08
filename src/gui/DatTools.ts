@@ -11,7 +11,7 @@ dat.GUI.prototype.hasFolder = function(name: string) {
     return this.__folders[name] !== undefined;
 }
 
-export default class ItownsGUI extends dat.GUI {
+export class ItownsGUI extends dat.GUI {
     colorGUI: dat.GUI;
     elevationGUI: dat.GUI;
     view: itowns.View;
@@ -69,5 +69,36 @@ export default class ItownsGUI extends dat.GUI {
             layer.scale = value;
             this.view.notifyChange(layer);
         });
+    }
+}
+
+
+export class InondataGUI extends ItownsGUI {
+    waterGUI: dat.GUI;
+
+    constructor(view: itowns.View, options?: dat.GUIParams) {
+        super(view, options);
+        this.waterGUI = this.addFolder('Water');
+        this.waterGUI.hide();
+    }
+
+    override addLayer(layer: any /* itowns.Layer */) {
+        if (layer.isWaterLayer) {
+            this.addWaterLayer(layer);
+        } else {
+            super.addLayer(layer);
+        }
+    }
+
+    addWaterLayer(layer: any /* itowns.ColorLayer */) {
+        if (this.waterGUI.hasFolder(layer.id)) return;
+        this.waterGUI.show();
+
+        const folder = this.waterGUI.addFolder(layer.id);
+        folder.add({ visible: layer.visible }, 'visible')
+        .onChange(((value) => {
+            layer.visible = value;
+            this.view.notifyChange(layer);
+        }));
     }
 }

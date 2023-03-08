@@ -1,17 +1,18 @@
 import * as itowns from 'itowns';
 import * as THREE from 'three';
+import { Object3D } from 'three';
 
-import { TestMesh } from '../inondata';
+import { TestMesh, Water } from '../inondata';
 
 export interface WaterLayerOptions {
     source?: itowns.Source,
     zoom?: { max?: number, min?: number }
 }
 
-type TileNode = {
-    parent: TileNode,
-    visible: boolean,
+type TileMesh = {
+    parent: TileMesh,
     layerUpdateState: { [id: string]: itowns.LayerUpdateState },
+    link: Array<LinkObject<Water>>,
     getExtentsByProjection(crs: string): itowns.Extent[];
 } & THREE.Mesh<THREE.BufferGeometry, THREE.RawShaderMaterial>
 
@@ -19,83 +20,104 @@ type WaterData = {
     height: THREE.Texture
 }
 
-export default class WaterLayer extends itowns.GeometryLayer {
-    // Extended from `Layer`
-    // id: readonly string
-    // options: object (= config.options)
-    // frozen: boolean
-    // zoom: { max: number, min: number } (= config.zoom)
-    // source: Source
-    // cache: Cache
-    // convert(data: any): any
-    //private material: THREE.RawShaderMaterial
+class LinkObject<O extends Object3D> extends THREE.Group {
+    layer: any;
+    object: O;
 
+    constructor(object: O, layer: itowns.Layer) {
+        super();
+        this.object = object;
+        this.layer = layer;
+        this.add(object);
+    }
+}
+
+// From View#addLayer:
+// - View#preprocessLayer (layer.crs = view.referenceCrs)
+// - If no parentLayer
+//   - check if Layer#update exists
+//   - check if Layer#preUpdate exists
+// - Adds Layer#object3D to the scene
+
+// From MainLoop#update:
+// - `preUpdate` returns an array of elements to update
+//   const elementsToUpdate = geometryLayer.preUpdate(context, srcs);
+// - `update` is called in `updateElements`.
+//   updateElements(context, geometryLayer, elementsToUpdate);
+// - `postUpdate` is called when this geom layer update process is finished
+//   geometryLayer.postUpdate(context, geometryLayer, updateSources);
+
+
+export default class WaterLayer extends itowns.GeometryLayer {
     readonly isWaterLayer = true;
+
+    object3d!: THREE.Object3D;
+    parent!: itowns.Layer;
 
     constructor(id: string, config: WaterLayerOptions = {}) {
         super(id, new THREE.Group(), config);
-        // GeometryLayer
-        // config.source: Source
-        // config.visible: boolean
     }
 
-    // From Layer (placeholder)
     override convert(data: WaterData) {
-        //console.log('convert');
-        //console.log(data);
         return data;
     }
 
-    // From Layer
     override getData(from: any, to: any) {
         const data = super.getData(from, to);
         return data;
     }
 
-    // From View#addLayer:
-    // - View#preprocessLayer (layer.crs = view.referenceCrs)
-    // - If no parentLayer
-    //   - check if Layer#update exists
-    //   - check if Layer#preUpdate exists
-    // - Adds Layer#object3D to the scene
-
-    // From MainLoop#update:
-    // - `preUpdate` returns an array of elements to update
-    //   const elementsToUpdate = geometryLayer.preUpdate(context, srcs);
-    // - `update` is called in `updateElements`.
-    //   updateElements(context, geometryLayer, elementsToUpdate);
-    // - `postUpdate` is called when this geom layer update process is finished
-    //   geometryLayer.postUpdate(context, geometryLayer, updateSources);
-
-
-    /* ctx: {
-     *   camera: itownsCamera,
-     *   engine: c3DEngine,
-     *   scheduler: Scheduler,
-     *   view
-     * }
+    /*
+     * Pre-update of the layer.
+     * @param {Object} context
+     * @param {Camera} context.camera
+     * @param {c3DEngine} context.engine
+     * @param {Scheduler} context.scheduler
+     * @param {View} context.view
+     * @param {Set<GeometryLayer>} sources - Change sources notified to the view
+     * using View#notifyChange.
      */
-    preUpdate(ctx: any, srcs: Set<any> /* GLayer | Camera */) {
-        //console.log('preUpdate');
-        //console.log(ctx);
-        //console.log(srcs);
+    preUpdate(context: any, sources: Set<any>) {
+        if (sources.has(this.parent)) {
+            // Parent geometry layer is being updated following a notifyChange
+            // on the view. Clean our local "scene".
+            this.object3d.clear();
+        }
     }
 
-    // layer = GeometryLayer (TODO: Ask someone: Why parameter then ?)
-    // node = TileMesh
-    update(context: any, layer: any, node: TileNode) {
+    /*
+     * Update of the layer.
+     * @param {Object} context
+     * @param {Camera} context.camera
+     * @param {c3DEngine} context.engine
+     * @param {Scheduler} context.scheduler
+     * @param {View} context.view
+     * @param {GeometryLayer} layer - The current layer? (seems to always equal
+     * to `this`.
+     * @param {TileMesh} node
+     */
+    update(context: any, layer: any, node: TileMesh) {
+        if (!node.parent && node.children.length) {
+            // TODO: if node has beeen removed, dispose three.js resource
+            return;
+        }
+
         if (!node.visible) {
             return;
         }
 
         if(node.layerUpdateState[layer.id] === undefined) {
+            // First update, initialize our layer state to idle
             node.layerUpdateState[layer.id] = new itowns.LayerUpdateState();
         } else if (!node.layerUpdateState[layer.id].canTryUpdate()) {
-            // TODO: node.link ???
+            // No more update possible, get our mesh from the node cache and add
+            // it to our local "scene".
+            let mesh = node.link.find(n => n.layer && n.layer.id == layer.id);
+            mesh?.layer.object3d.add(mesh);
+            // // TODO: Should we update mesh.matrixWorld ?
             return;
         }
 
-        // TODO: Ensures it does return at least one element ?
         const nodeExtents = node.getExtentsByProjection(layer.source.crs);
         const nodeZoom = nodeExtents[0].zoom;
 
@@ -104,12 +126,17 @@ export default class WaterLayer extends itowns.GeometryLayer {
         if (nodeZoom != layer.zoom.min) {
             // TODO: other checks to not load data
             // !this.source.extentsInsideLimit(node.extent, nodeDest);
+
+            // Layer's source has no data for this node's extent and level, no
+            // need to update/load data anymore.
             node.layerUpdateState[layer.id].noMoreUpdatePossible();
             return;
         }
 
+        // Layer state is now pending
         node.layerUpdateState[layer.id].newTry();
 
+        // Schedule the fetch, parse and convert
         const command = {
             layer,
             extentsSource: nodeExtents,
@@ -119,68 +146,30 @@ export default class WaterLayer extends itowns.GeometryLayer {
 
         return context.scheduler.execute(command)
         .then(function(meshes: Array<THREE.Mesh>) {
+            // Fetch, parse and convert were successful, no need for further
+            // updates.
             node.layerUpdateState[layer.id].noMoreUpdatePossible();
-            console.log('After command');
 
-            //const textureLoader = new THREE.TextureLoader();
-            //Promise.all([
-            //    textureLoader.load('water/flow.jpg'),
-            //    textureLoader.load('water/normal0.jpg'),
-            //    textureLoader.load('water/normal1.jpg'),
-            //]).then(([flowMap, normalMap0, normalMap1]) => {
-            //    const mesh = new Water(node.geometry, {
-            //        flowMap, normalMap0, normalMap1
-            //    });
-            //    mesh.matrixWorld = node.matrixWorld;
-            //    layer.object3d.add(mesh);
-            //});
-
-            const geometry = node.geometry;
-            //const geometry = new THREE.PlaneGeometry(100, 100);
-            //const mesh = new THREE.Mesh(geometry, material);
-            const mesh = new TestMesh(geometry);
-            mesh.matrixWorld = node.matrixWorld;
-            layer.object3d.add(mesh);
-            //console.log(node.geometry);
-            //console.log(node.material);
-            //console.log(node.material.defines);
-            //console.log(mesh);
-
-            //meshes.forEach((mesh) => {
-            //    if (!node.parent) {
-            //        console.error('Missing parent WTF ?');
-            //    } else {
-            //        // TODO: node.link.push ????
-            //        console.log(node);
-            //        mesh.matrixWorld = node.matrixWorld;
-            //        mesh.position.x = node.position.x;
-            //        mesh.position.y = node.position.y;
-            //        mesh.position.z = node.position.z + 10;
-            //        layer.object3d.add(mesh);
-            //    }
-            //    // mesh.layer = layer
-            //});
-            //console.log(nodeExtents[0]);
+            const textureLoader = new THREE.TextureLoader();
+            Promise.all([
+                textureLoader.load('water/flow.jpg'),
+                textureLoader.load('water/normal0.jpg'),
+                textureLoader.load('water/normal1.jpg'),
+            ]).then(([flowMap, normalMap0, normalMap1]) => {
+                const vector3 = new THREE.Vector3();
+                const size = node.geometry.boundingBox?.getSize(vector3);
+                if (size) {
+                    const geometry = new THREE.PlaneGeometry(size.x, size.y);
+                    const mesh = new Water(geometry, {
+                        flowMap, normalMap0, normalMap1
+                    });
+                    mesh.matrixWorld = node.matrixWorld;
+                    const helper = new LinkObject(mesh, layer);
+                    node.link.push(helper);
+                    layer.object3d.add(helper);
+                }
+            });
         });
-
-
-        //console.log('update')
-        //console.log(ctx);
-        //console.log(this === geometryLayer);
-        //console.log(geometryLayer);
-        //console.log(node);
-
-        // TODO: Here the layer shall execute a command
-        //         const command = {
-        //    layer,
-        //    extentsSource: extentsDestination,
-        //    view: context.view,
-        //    requester: node,
-        //};
-    }
-
-    override postUpdate(/* ctx: any, geometryLayer: any, updateSources: any */) {
-        console.log('postUpdate');
     }
 
     override culling() {

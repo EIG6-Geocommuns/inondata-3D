@@ -2,7 +2,7 @@ import * as itowns from 'itowns';
 const itowns_widgets = require('itowns/widgets'); // FIXME: temporary hack
 import * as THREE from 'three';
 
-import ItownsGUI from './gui/DatTools';
+import { ItownsGUI, InondataGUI } from './gui/DatTools';
 import JSONLayers from './layers/JSONLayers';
 import WaterLayer from './layers/WaterLayer';
 
@@ -29,7 +29,7 @@ const waterSource = new itowns.FileSource({
      url: `${window.location.href}water/height.jpg`,
      crs: 'EPSG:4326',
      fetcher: itowns.Fetcher.texture,
-     parser: (data: any) => Promise.resolve({ height: data }),
+     parser: (height: THREE.Texture) => Promise.resolve({ height }),
 });
 
 function colorLayer(config: any) {
@@ -68,10 +68,10 @@ function setupRasterLayers(view: itowns.GlobeView, gui: ItownsGUI) {
     view.addLayer(mapLayer).then((layer) => gui.addLayer(layer));
 
     const worldTerrainLayer = terrainLayer(JSONLayers.wmts.dtmSRTM3);
-    view.addLayer(worldTerrainLayer).then((layer) => gui.addLayer(layer));
+    view.addLayer(worldTerrainLayer); //.then((layer) => gui.addLayer(layer));
 
     const franceTerrainLayer = terrainLayer(JSONLayers.wmts.dtmIGNHighres);
-    view.addLayer(franceTerrainLayer).then((layer) => gui.addLayer(layer));
+    view.addLayer(franceTerrainLayer); //.then((layer) => gui.addLayer(layer));
 }
 
 function setupFeatureLayers(view: itowns.GlobeView, gui: ItownsGUI) {
@@ -79,7 +79,7 @@ function setupFeatureLayers(view: itowns.GlobeView, gui: ItownsGUI) {
     const style = new itowns.Style({
         fill: {
             color: (p: any) => {
-                return color.set(0x555555);
+                return color.set(0xDCD646);
             },
             base_altitude: (p: any) => p.altitude_minimale_sol,
             extrusion_height: (p: any) => p.hauteur,
@@ -96,12 +96,13 @@ function setupFeatureLayers(view: itowns.GlobeView, gui: ItownsGUI) {
     view.addLayer(buildingLayer);
 }
 
-function setupWaterLayer(view: itowns.GlobeView) {
+function setupWaterLayer(view: itowns.GlobeView, gui: ItownsGUI) {
     const waterLayer = new WaterLayer('water', {
         source: waterSource,
-        zoom: { min: 14 }
+        zoom: { min: 11, max: 19 }
     });
-    view.addLayer(waterLayer);
+    waterLayer.visible = false;
+    view.addLayer(waterLayer).then((layer) => gui.addLayer(layer));
 }
 
 function setupWidgets(view: itowns.GlobeView) {
@@ -138,7 +139,7 @@ function main() {
     const viewerDiv = document.getElementById('viewerDiv') as HTMLDivElement;
     const view = new itowns.GlobeView(viewerDiv, placement);
 
-    const gui = new ItownsGUI(view, { autoPlace: false, width: 245 });
+    const gui = new InondataGUI(view, { autoPlace: false, width: 245 });
     let element = document.createElement('div');
     element.id = 'menuDiv';
     element.appendChild(gui.domElement);
@@ -147,7 +148,7 @@ function main() {
     // TODO: setup loading screen
     setupRasterLayers(view, gui);
     setupFeatureLayers(view, gui);
-    setupWaterLayer(view);
+    setupWaterLayer(view, gui);
     setupWidgets(view);
 }
 
