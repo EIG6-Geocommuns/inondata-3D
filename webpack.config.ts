@@ -25,9 +25,9 @@ let config: webpack.Configuration = {
         }
     },
     output: {
-        filename: '[name].js',
+        filename: 'vizviz.js',
         path: path.resolve(__dirname, './public/libs'),
-        library: '[name]'
+        library: 'vizviz'
     },
     devServer: {
         devMiddleware: {
