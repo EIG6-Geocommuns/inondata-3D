@@ -4,6 +4,7 @@ import * as THREE from 'three';
 
 import ItownsGUI from './gui/DatTools';
 import JSONLayers from './layers/JSONLayers';
+import WaterLayer from './layers/WaterLayer';
 
 // Initial location
 const center = new itowns.Coordinates('EPSG:4326', 5.395317, 43.460333);
@@ -22,6 +23,13 @@ const buildingSource = new itowns.WFSSource({
     typeName: 'BDTOPO_V3:batiment',
     crs: 'EPSG:4326', //
     zoom: { min: 14, max: 14 },
+});
+
+const waterSource = new itowns.FileSource({
+     url: `${window.location.href}water/height.jpg`,
+     crs: 'EPSG:4326',
+     fetcher: itowns.Fetcher.texture,
+     parser: (data: any) => Promise.resolve({ height: data }),
 });
 
 function colorLayer(config: any) {
@@ -88,6 +96,14 @@ function setupFeatureLayers(view: itowns.GlobeView, gui: ItownsGUI) {
     view.addLayer(buildingLayer);
 }
 
+function setupWaterLayer(view: itowns.GlobeView) {
+    const waterLayer = new WaterLayer('water', {
+        source: waterSource,
+        zoom: { min: 14 }
+    });
+    view.addLayer(waterLayer);
+}
+
 function setupWidgets(view: itowns.GlobeView) {
     const widgets = new itowns_widgets.Navigation(view);
     const geocodingOptions = {
@@ -131,6 +147,7 @@ function main() {
     // TODO: setup loading screen
     setupRasterLayers(view, gui);
     setupFeatureLayers(view, gui);
+    setupWaterLayer(view);
     setupWidgets(view);
 }
 
