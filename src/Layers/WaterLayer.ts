@@ -11,7 +11,7 @@ type TileNode = {
     visible: boolean,
     layerUpdateState: { [id: string]: itowns.LayerUpdateState },
     getExtentsByProjection(crs: string): itowns.Extent[];
-} & THREE.Object3D
+} & THREE.Mesh
 
 type WaterData = {
     height: THREE.Texture
@@ -39,8 +39,8 @@ export class WaterLayer extends itowns.GeometryLayer {
 
     // From Layer (placeholder)
     override convert(data: WaterData) {
-        console.log('convert');
-        console.log(data);
+        //console.log('convert');
+        //console.log(data);
         const geometry = new THREE.PlaneGeometry(1, 1);
         const material = new THREE.MeshBasicMaterial({
             color: 0xffff00,
@@ -126,21 +126,31 @@ export class WaterLayer extends itowns.GeometryLayer {
             node.layerUpdateState[layer.id].noMoreUpdatePossible();
             console.log('After command');
 
-            meshes.forEach((mesh) => {
-                if (!node.parent) {
-                    console.error('Missing parent WTF ?');
-                } else {
-                    // TODO: node.link.push ????
-                    console.log(node);
-                    mesh.matrixWorld = node.matrixWorld;
-                    mesh.position.x = node.position.x;
-                    mesh.position.y = node.position.y;
-                    mesh.position.z = node.position.z + 10;
-                    layer.object3d.add(mesh);
-                    console.log(mesh);
-                }
-                // mesh.layer = layer
+            const geometry = node.geometry;
+            const material = new THREE.MeshBasicMaterial({
+                color: 0xffff00,
+                side: THREE.DoubleSide,
             });
+            const plane = new THREE.Mesh(geometry, material);
+            plane.position.z += 10000;
+            layer.object3d.add(plane);
+            console.log(geometry);
+            console.log(plane);
+
+            //meshes.forEach((mesh) => {
+            //    if (!node.parent) {
+            //        console.error('Missing parent WTF ?');
+            //    } else {
+            //        // TODO: node.link.push ????
+            //        console.log(node);
+            //        mesh.matrixWorld = node.matrixWorld;
+            //        mesh.position.x = node.position.x;
+            //        mesh.position.y = node.position.y;
+            //        mesh.position.z = node.position.z + 10;
+            //        layer.object3d.add(mesh);
+            //    }
+            //    // mesh.layer = layer
+            //});
             //console.log(nodeExtents[0]);
         });
 

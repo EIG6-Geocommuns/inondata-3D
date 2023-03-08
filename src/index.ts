@@ -70,13 +70,9 @@ function main() {
     view.addLayer(franceTerrainLayer).then((layer) => gui.addLayer(layer));
 
     const color = new THREE.Color();
-    let flag = 4;
     const style = new itowns.Style({
         fill: {
             color: (p: any) => {
-                if (flag-- > 0) {
-                    console.log(p);
-                }
                 return color.set(0x555555);
             },
             base_altitude: (p: any) => p.altitude_minimale_sol,

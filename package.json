@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "dat.gui": "^0.7.9",
-    "itowns": "file:../itowns",
+    "itowns": "npm:itowns-geocommuns@^2.39.0-rev1",
     "three": "^0.146.0"
   }
 }
