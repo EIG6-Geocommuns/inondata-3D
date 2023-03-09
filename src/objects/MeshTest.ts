@@ -29,6 +29,7 @@ export class MeshTest<G extends BufferGeometry> extends Mesh<G, ShaderMaterial> 
             transparent: false, // TODO: for now
             fog: true,
             side: DoubleSide,
+            wireframe: true
         });
     }
 

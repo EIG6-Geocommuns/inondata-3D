@@ -92,7 +92,7 @@ function main() {
 
     const waterLayer = new WaterLayer('water', {
         source: waterSource,
-        zoom: { min: 12 }
+        zoom: { min: 14 }
     });
     view.addLayer(waterLayer);
 

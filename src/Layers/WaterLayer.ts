@@ -2,6 +2,7 @@ import * as itowns from 'itowns';
 import * as THREE from 'three';
 
 import { MeshTest } from '../objects/MeshTest';
+import { Water } from '../objects/Water';
 
 export interface WaterLayerOptions {
     source?: itowns.Source,
@@ -42,14 +43,8 @@ export class WaterLayer extends itowns.GeometryLayer {
     // From Layer (placeholder)
     override convert(data: WaterData) {
         //console.log('convert');
-        //console.log(data);
-        const geometry = new THREE.PlaneGeometry(1, 1);
-        const material = new THREE.MeshBasicMaterial({
-            color: 0xffff00,
-            side: THREE.DoubleSide,
-        });
-        const plane = new THREE.Mesh(geometry, material);
-        return plane;
+        console.log(data);
+        return data;
     }
 
     // From Layer
@@ -128,19 +123,29 @@ export class WaterLayer extends itowns.GeometryLayer {
             node.layerUpdateState[layer.id].noMoreUpdatePossible();
             console.log('After command');
 
-            const geometry = node.geometry;
-            const material = new THREE.MeshBasicMaterial({
-                color: 0xffff00,
-                side: THREE.DoubleSide,
+            const textureLoader = new THREE.TextureLoader();
+            Promise.all([
+                textureLoader.load('water/flow.jpg'),
+                textureLoader.load('water/normal0.jpg'),
+                textureLoader.load('water/normal1.jpg'),
+            ]).then(([flowMap, normalMap0, normalMap1]) => {
+                const mesh = new Water(node.geometry, {
+                    flowMap, normalMap0, normalMap1
+                });
+                mesh.matrixWorld = node.matrixWorld;
+                layer.object3d.add(mesh);
             });
+
+            //const geometry = node.geometry;
+            //const geometry = new THREE.PlaneGeometry(100, 100);
             //const mesh = new THREE.Mesh(geometry, material);
-            const mesh = new MeshTest(geometry);
-            mesh.matrixWorld = node.matrixWorld;
-            layer.object3d.add(mesh);
-            console.log(node.geometry);
-            console.log(node.material);
-            console.log(node.material.defines);
-            console.log(mesh);
+            //const mesh = new MeshTest(geometry);
+            //mesh.matrixWorld = node.matrixWorld;
+            //layer.object3d.add(mesh);
+            //console.log(node.geometry);
+            //console.log(node.material);
+            //console.log(node.material.defines);
+            //console.log(mesh);
 
             //meshes.forEach((mesh) => {
             //    if (!node.parent) {

@@ -15,9 +15,12 @@
 void main() {
     vec3 transformed = vec3(position);
     transformed += 100.0 * normal;
+
     vec4 mvPosition = vec4(transformed, 1.0);
     mvPosition = modelViewMatrix * mvPosition;
+
     gl_Position = projectionMatrix * mvPosition;
+
     #include <logdepthbuf_vertex>
     #include <fog_vertex>
 }
