@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { ItownsGUI, InondataGUI } from './gui/DatTools';
 import JSONLayers from './layers/JSONLayers';
 import WaterLayer from './layers/WaterLayer';
+import setupControls from './controls';
 
 // Initial location
 const center = new itowns.Coordinates('EPSG:4326', 5.395317, 43.460333);
@@ -138,6 +139,7 @@ function setupWidgets(view: itowns.GlobeView) {
 function main() {
     const viewerDiv = document.getElementById('viewerDiv') as HTMLDivElement;
     const view = new itowns.GlobeView(viewerDiv, placement);
+    setupControls(view);
 
     const gui = new InondataGUI(view, { autoPlace: false, width: 245 });
     let element = document.createElement('div');
