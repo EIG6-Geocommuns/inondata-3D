@@ -2,7 +2,7 @@ import * as itowns from 'itowns';
 import * as THREE from 'three';
 import { Object3D } from 'three';
 
-import { TestMesh, Water } from '../inondata';
+import Water from '../objects/Water';
 
 export interface WaterLayerOptions {
     source?: itowns.Source,
