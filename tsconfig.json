@@ -1,12 +1,25 @@
 {
-  "compilerOptions": {
-    "moduleResolution": "node",
-    "target": "es6",
-    "strict": true,
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    /* Testing */
-    "skipLibCheck": true
-  }
+    "include": [ "src/index.ts" ],
+    "exclude": [ "webpack.config.ts", "node_modules", "lib", "dist" ],
+    "compilerOptions": {
+        /* Type Checking */
+        "strict": true,
+        /* Modules */
+        "baseUrl": ".",
+        /* Emit */
+        "declaration": true,
+        "outDir": "lib",
+        /* Interop Constraints */
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        /* Language and Environment */
+        "target": "es6",
+        /* Completeness */
+        "skipLibCheck": true,
+
+        "moduleResolution": "node",
+        "allowJs": true,
+        "resolveJsonModule": true,
+    }
 }

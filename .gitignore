@@ -1,4 +1,6 @@
 # Build
+lib/
+dist/
 public/libs/
 
 # Javascript & Typescript
