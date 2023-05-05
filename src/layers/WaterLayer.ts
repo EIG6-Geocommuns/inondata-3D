@@ -3,16 +3,17 @@ import * as THREE from 'three';
 import { Object3D } from 'three';
 
 import Water from '../objects/Water';
+import TestMesh from '../objects/TestMesh';
 
 export interface WaterLayerOptions {
     source?: itowns.Source,
-    zoom?: { max?: number, min?: number }
+    zoom?: { max?: number, min?: number },
 }
 
 type TileMesh = {
     parent: TileMesh,
     layerUpdateState: { [id: string]: itowns.LayerUpdateState },
-    link: Array<LinkObject<Water>>,
+    link: Array<LinkObject<THREE.Mesh>>,
     getExtentsByProjection(crs: string): itowns.Extent[];
 } & THREE.Mesh<THREE.BufferGeometry, THREE.RawShaderMaterial>
 
@@ -93,10 +94,15 @@ export default class WaterLayer extends itowns.GeometryLayer {
      * @param {Scheduler} context.scheduler
      * @param {View} context.view
      * @param {GeometryLayer} layer - The current layer? (seems to always equal
-     * to `this`.
+     * to `this`. Confirmed by gchoqueux.
      * @param {TileMesh} node
      */
     update(context: any, layer: any, node: TileMesh) {
+        const nodeExtents = node.getExtentsByProjection(layer.source.crs);
+        const nodeZoom = nodeExtents[0].zoom;
+        const nodeExtent = nodeExtents[0];
+        //console.log(`[${nodeExtent.zoom}, ${nodeExtent.row}, ${nodeExtent.col}] : ${node.visible}`)
+
         if (!node.parent && node.children.length) {
             // TODO: if node has beeen removed, dispose three.js resource
             return;
@@ -118,12 +124,10 @@ export default class WaterLayer extends itowns.GeometryLayer {
             return;
         }
 
-        const nodeExtents = node.getExtentsByProjection(layer.source.crs);
-        const nodeZoom = nodeExtents[0].zoom;
 
         // Checks to prevent unecessary load of data
         // check if its tile level is equal to display level layer
-        if (nodeZoom != layer.zoom.min) {
+        if (nodeZoom <= layer.zoom.min) {
             // TODO: other checks to not load data
             // !this.source.extentsInsideLimit(node.extent, nodeDest);
 
@@ -145,7 +149,17 @@ export default class WaterLayer extends itowns.GeometryLayer {
         };
 
         return context.scheduler.execute(command)
-        .then(function(meshes: Array<THREE.Mesh>) {
+        .then(function(context: Array<THREE.DataTexture>) {
+            const displacementMap = context[0];
+            const imageData = new ImageData(
+                new Uint8ClampedArray(displacementMap.image.data.buffer),
+                256,
+                256,
+            );
+            const map = new THREE.Texture(imageData);
+            //console.warn(meshes[0].height.source.data);
+            //console.warn(displacementMap);
+
             // Fetch, parse and convert were successful, no need for further
             // updates.
             node.layerUpdateState[layer.id].noMoreUpdatePossible();
@@ -158,11 +172,22 @@ export default class WaterLayer extends itowns.GeometryLayer {
             ]).then(([flowMap, normalMap0, normalMap1]) => {
                 const vector3 = new THREE.Vector3();
                 const size = node.geometry.boundingBox?.getSize(vector3);
+                const nodeUniforms = node.material.uniforms;
                 if (size) {
-                    const geometry = new THREE.PlaneGeometry(size.x, size.y);
-                    const mesh = new Water(geometry, {
-                        flowMap, normalMap0, normalMap1
-                    });
+                    const geometry = new THREE.PlaneGeometry(size.x, size.y, 10, 10);
+                    //const geometry = node.geometry;
+                    const material = new THREE.MeshPhongMaterial();
+                    material.displacementMap = displacementMap;
+                    material.map = map;
+                    const mesh = new TestMesh(geometry);
+                    // const mesh = new Water(geometry, {
+                    //     flowMap, normalMap0, normalMap1
+                    // });
+                    //mesh.displacementMap = displacementMap;
+                    console.log();
+                    console.log(Object.keys(mesh.geometry.attributes));
+                    console.log(mesh.material.uniforms);
+                    console.log(Object.keys(mesh.material.defines));
                     mesh.matrixWorld = node.matrixWorld;
                     const helper = new LinkObject(mesh, layer);
                     node.link.push(helper);

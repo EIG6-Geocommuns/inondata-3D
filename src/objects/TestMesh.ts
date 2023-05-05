@@ -4,8 +4,9 @@ import {
     Mesh,
     Object3D,
     ShaderMaterial,
+    Texture,
     UniformsLib,
-    UniformsUtils
+    UniformsUtils,
 } from "three";
 
 import vertexShader from '../shaders/test_mesh.vert';
@@ -22,15 +23,20 @@ extends Mesh<G, ShaderMaterial> {
         // material
         this.material = new ShaderMaterial({
             uniforms: UniformsUtils.merge([
-                UniformsLib['fog']
+                UniformsLib.fog,
+                UniformsLib.displacementmap,
             ]),
             vertexShader,
             fragmentShader,
-            transparent: false,
+            transparent: true,
             fog: true,
-            side: DoubleSide,
             wireframe: true
         });
+        this.material.defines.USE_DISPLACEMENTMAP = "";
+    }
+
+    set displacementMap(map: Texture | null) {
+        this.material.uniforms.displacementMap.value = map;
     }
 
     static isTestMesh<G extends BufferGeometry>(obj: Object3D):

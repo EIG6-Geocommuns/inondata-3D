@@ -67,7 +67,8 @@ export default class Water extends Mesh<BufferGeometry, ShaderMaterial> {
             vertexShader: shader.vertexShader,
             fragmentShader: shader.fragmentShader,
             transparent: true,
-            fog: true
+            fog: true,
+            wireframe: true,
         });
 
         this.material.uniforms.tFlowMap = { value: flowMap };
@@ -117,7 +118,7 @@ export default class Water extends Mesh<BufferGeometry, ShaderMaterial> {
         return (obj as Water).isWater !== undefined;
     }
 
-    static WaterShader = {
+    static WaterShader: Shader = {
         uniforms: {
             'color': { value: null },
             'tNormalMap0': { value: null },
