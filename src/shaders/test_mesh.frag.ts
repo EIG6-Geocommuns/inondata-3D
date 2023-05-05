@@ -3,6 +3,11 @@ export default /* glsl */ `
 #include <fog_pars_fragment>
 #include <logdepthbuf_pars_fragment>
 
+// TODO: For debugging purpose
+#include <displacementmap_pars_vertex>
+// TODO: Use three.js includes
+varying vec2 vUv;
+
 void main() {
     #include <logdepthbuf_fragment>
 

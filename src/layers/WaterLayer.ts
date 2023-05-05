@@ -127,7 +127,7 @@ export default class WaterLayer extends itowns.GeometryLayer {
 
         // Checks to prevent unecessary load of data
         // check if its tile level is equal to display level layer
-        if (nodeZoom <= layer.zoom.min) {
+        if (nodeZoom != 14) {
             // TODO: other checks to not load data
             // !this.source.extentsInsideLimit(node.extent, nodeDest);
 
@@ -176,18 +176,20 @@ export default class WaterLayer extends itowns.GeometryLayer {
                 if (size) {
                     const geometry = new THREE.PlaneGeometry(size.x, size.y, 10, 10);
                     //const geometry = node.geometry;
-                    const material = new THREE.MeshPhongMaterial();
-                    material.displacementMap = displacementMap;
-                    material.map = map;
+                    // const material = new THREE.MeshPhongMaterial();
+                    // material.displacementMap = displacementMap;
+                    // material.map = map;
                     const mesh = new TestMesh(geometry);
                     // const mesh = new Water(geometry, {
                     //     flowMap, normalMap0, normalMap1
                     // });
-                    //mesh.displacementMap = displacementMap;
+                    mesh.displacementMap = displacementMap;
                     console.log();
                     console.log(Object.keys(mesh.geometry.attributes));
                     console.log(mesh.material.uniforms);
                     console.log(Object.keys(mesh.material.defines));
+                    console.log(displacementMap.source.data);
+                    console.log(map.source.data);
                     mesh.matrixWorld = node.matrixWorld;
                     const helper = new LinkObject(mesh, layer);
                     node.link.push(helper);
