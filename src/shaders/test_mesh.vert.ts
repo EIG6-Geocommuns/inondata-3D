@@ -8,7 +8,8 @@ export default /* glsl */ `
 varying vec2 vUv;
 
 void main() {
-    vec2 vUv = vec2(uv.x, 1.0 - uv.y);
+    //vec2 vUv = vec2(uv.x, 1.0 - uv.y);
+    vUv = uv;
 #include <begin_vertex> // vec3 transformed
 //#include <displacementmap_vertex>
     transformed += normalize(normal) * (texture2D(displacementMap, vUv).x * displacementScale + displacementBias);

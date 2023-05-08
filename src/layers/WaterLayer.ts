@@ -151,6 +151,7 @@ export default class WaterLayer extends itowns.GeometryLayer {
         return context.scheduler.execute(command)
         .then(function(context: Array<THREE.DataTexture>) {
             const displacementMap = context[0];
+            displacementMap.flipY = true;
             const imageData = new ImageData(
                 new Uint8ClampedArray(displacementMap.image.data.buffer),
                 256,
