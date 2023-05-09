@@ -149,17 +149,11 @@ export default class WaterLayer extends itowns.GeometryLayer {
         };
 
         return context.scheduler.execute(command)
-        .then(function(context: Array<THREE.DataTexture>) {
-            const displacementMap = context[0];
+        .then(function(context: Array<{ height: THREE.Texture }>) {
+            const displacementMap = context[0].height;
             displacementMap.flipY = true;
-            const imageData = new ImageData(
-                new Uint8ClampedArray(displacementMap.image.data.buffer),
-                256,
-                256,
-            );
-            const map = new THREE.Texture(imageData);
-            //console.warn(meshes[0].height.source.data);
-            //console.warn(displacementMap);
+            // console.warn(displacementMap);
+            console.warn(displacementMap);
 
             // Fetch, parse and convert were successful, no need for further
             // updates.
@@ -190,7 +184,6 @@ export default class WaterLayer extends itowns.GeometryLayer {
                     console.log(mesh.material.uniforms);
                     console.log(Object.keys(mesh.material.defines));
                     console.log(displacementMap.source.data);
-                    console.log(map.source.data);
                     mesh.matrixWorld = node.matrixWorld;
                     const helper = new LinkObject(mesh, layer);
                     node.link.push(helper);
