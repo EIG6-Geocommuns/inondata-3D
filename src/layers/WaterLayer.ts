@@ -152,6 +152,8 @@ export default class WaterLayer extends itowns.GeometryLayer {
         return context.scheduler.execute(command)
         .then(function(context: Array<{ height: THREE.Texture }>) {
             const displacementMap = context[0].height;
+            // TODO: The following is deprecated for non-DOM element.
+            // See https://stackoverflow.com/questions/61319574/webgl-warning-teximage-alpha-premult-and-y-flip-are-deprecated-for-non-dom-ele
             displacementMap.flipY = true;
             // console.warn(displacementMap);
             console.warn(displacementMap);
