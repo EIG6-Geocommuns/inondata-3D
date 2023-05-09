@@ -4,6 +4,7 @@ import { Object3D } from 'three';
 
 import Water from '../objects/Water';
 import TestMesh from '../objects/TestMesh';
+import Water2 from '../objects/Water2';
 
 export interface WaterLayerOptions {
     source?: itowns.Source,
@@ -174,16 +175,26 @@ export default class WaterLayer extends itowns.GeometryLayer {
                     // const material = new THREE.MeshPhongMaterial();
                     // material.displacementMap = displacementMap;
                     // material.map = map;
-                    const mesh = new TestMesh(geometry);
+                    const mesh = new Water2(geometry);
                     // const mesh = new Water(geometry, {
                     //     flowMap, normalMap0, normalMap1
                     // });
+                    const width = 256;
+                    const height = 256;
+                    const data = new Float32Array(256 * 256);
+                    data.fill(0.1);
+                    const heightMap = new THREE.DataTexture(data, width, height, THREE.RedFormat, THREE.FloatType);
+                    heightMap.internalFormat = 'R32F';
+                    heightMap.needsUpdate = true;
+
                     mesh.displacementMap = displacementMap;
+                    mesh.heightMap = heightMap;
                     console.log();
                     console.log(Object.keys(mesh.geometry.attributes));
                     console.log(mesh.material.uniforms);
                     console.log(Object.keys(mesh.material.defines));
-                    console.log(displacementMap.source.data);
+                    console.log(displacementMap.source);
+                    console.log(heightMap.source);
                     mesh.matrixWorld = node.matrixWorld;
                     const helper = new LinkObject(mesh, layer);
                     node.link.push(helper);
