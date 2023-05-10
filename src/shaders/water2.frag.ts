@@ -6,6 +6,8 @@ export default /* glsl */ `
 // #include <inondata/heightmap_pars_fragment>
 #ifdef USE_HEIGHTMAP
 uniform sampler2D heightMap;
+uniform float heightScale;
+uniform float heightBias;
 #endif
 
 // TODO: Use three.js includes
@@ -16,6 +18,8 @@ void main() {
 
 #ifdef USE_HEIGHTMAP
     float height = texture2D(heightMap, vUv).x;
+    // Since we are in greyscale for now
+    height = height * heightScale + heightBias;
 
     // TODO: The following must be given as defines (+ unrolled loop)
     vec3 heightColor;

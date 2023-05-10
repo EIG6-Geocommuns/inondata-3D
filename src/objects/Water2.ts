@@ -54,8 +54,24 @@ extends Mesh<G, ShaderMaterial> {
         this.material.uniforms.displacementMap.value = map;
     }
 
+    set displacementScale(scale: number) {
+        this.material.uniforms.displacementScale.value = scale;
+    }
+
+    set displacementBias(bias: number) {
+        this.material.uniforms.displacementBias.value = bias;
+    }
+
     set heightMap(map: Texture | null) {
         this.material.uniforms.heightMap.value = map;
+    }
+
+    set heightScale(scale: number) {
+        this.material.uniforms.heightScale.value = scale;
+    }
+
+    set heightBias(bias: number) {
+        this.material.uniforms.heightBias.value = bias;
     }
 
     static isWater2<G extends BufferGeometry>(obj: Object3D):

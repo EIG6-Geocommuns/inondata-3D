@@ -6,6 +6,10 @@ import Water2 from '../objects/Water2';
 export interface WaterLayerOptions {
     source?: itowns.Source,
     zoom?: { max?: number, min?: number },
+    displacementScale?: number,
+    displacementBias?: number;
+    heightScale?: number,
+    heightBias?: number,
 }
 
 type TileMesh = {
@@ -53,8 +57,17 @@ export default class WaterLayer extends itowns.GeometryLayer {
     object3d!: THREE.Object3D;
     parent!: itowns.Layer;
 
+    displacementScale?: number;
+    displacementBias?: number;
+    heightScale?: number;
+    heightBias?: number;
+
     constructor(id: string, config: WaterLayerOptions = {}) {
         super(id, new THREE.Group(), config);
+        this.displacementScale = config.displacementScale;
+        this.displacementBias = config.displacementBias;
+        this.heightScale = config.heightScale;
+        this.heightBias = config.heightBias;
     }
 
     override convert(data: WaterData) {
@@ -145,6 +158,11 @@ export default class WaterLayer extends itowns.GeometryLayer {
             requester: node
         };
 
+        const displacementScale = this.displacementScale;
+        const displacementBias = this.displacementBias;
+        const heightScale = this.heightScale;
+        const heightBias = this.heightBias;
+
         return context.scheduler.execute(command)
         .then(function(context: Array<Array<THREE.Texture>>) {
             const displacementMap = context[0][0];
@@ -165,6 +183,10 @@ export default class WaterLayer extends itowns.GeometryLayer {
 
                 mesh.displacementMap = displacementMap;
                 mesh.heightMap = heightMap;
+                if (heightScale) { mesh.heightScale = heightScale };
+                if (heightBias) { mesh.heightBias = heightBias };
+                if (displacementScale) { mesh.displacementScale = displacementScale };
+                if (displacementBias) { mesh.displacementBias = displacementBias };
                 mesh.matrixWorld = node.matrixWorld;
 
                 // Push to local cache
