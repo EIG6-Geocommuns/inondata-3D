@@ -1,18 +1,21 @@
 import * as itowns from 'itowns';
 import * as THREE from 'three';
-import { Object3D } from 'three';
 
-import Water from '../objects/Water';
+import Water2 from '../objects/Water2';
 
 export interface WaterLayerOptions {
     source?: itowns.Source,
-    zoom?: { max?: number, min?: number }
+    zoom?: { max?: number, min?: number },
+    displacementScale?: number,
+    displacementBias?: number;
+    heightScale?: number,
+    heightBias?: number,
 }
 
 type TileMesh = {
     parent: TileMesh,
     layerUpdateState: { [id: string]: itowns.LayerUpdateState },
-    link: Array<LinkObject<Water>>,
+    link: Array<LinkObject<THREE.Mesh>>,
     getExtentsByProjection(crs: string): itowns.Extent[];
 } & THREE.Mesh<THREE.BufferGeometry, THREE.RawShaderMaterial>
 
@@ -20,7 +23,7 @@ type WaterData = {
     height: THREE.Texture
 }
 
-class LinkObject<O extends Object3D> extends THREE.Group {
+class LinkObject<O extends THREE.Object3D> extends THREE.Group {
     layer: any;
     object: O;
 
@@ -54,8 +57,17 @@ export default class WaterLayer extends itowns.GeometryLayer {
     object3d!: THREE.Object3D;
     parent!: itowns.Layer;
 
+    displacementScale?: number;
+    displacementBias?: number;
+    heightScale?: number;
+    heightBias?: number;
+
     constructor(id: string, config: WaterLayerOptions = {}) {
         super(id, new THREE.Group(), config);
+        this.displacementScale = config.displacementScale;
+        this.displacementBias = config.displacementBias;
+        this.heightScale = config.heightScale;
+        this.heightBias = config.heightBias;
     }
 
     override convert(data: WaterData) {
@@ -93,10 +105,14 @@ export default class WaterLayer extends itowns.GeometryLayer {
      * @param {Scheduler} context.scheduler
      * @param {View} context.view
      * @param {GeometryLayer} layer - The current layer? (seems to always equal
-     * to `this`.
+     * to `this`. Confirmed by gchoqueux.
      * @param {TileMesh} node
      */
     update(context: any, layer: any, node: TileMesh) {
+        const nodeExtents = node.getExtentsByProjection(layer.source.crs);
+        const nodeZoom = nodeExtents[0].zoom;
+        const nodeExtent = nodeExtents[0];
+
         if (!node.parent && node.children.length) {
             // TODO: if node has beeen removed, dispose three.js resource
             return;
@@ -118,12 +134,10 @@ export default class WaterLayer extends itowns.GeometryLayer {
             return;
         }
 
-        const nodeExtents = node.getExtentsByProjection(layer.source.crs);
-        const nodeZoom = nodeExtents[0].zoom;
 
         // Checks to prevent unecessary load of data
         // check if its tile level is equal to display level layer
-        if (nodeZoom != layer.zoom.min) {
+        if (nodeZoom != 14) {
             // TODO: other checks to not load data
             // !this.source.extentsInsideLimit(node.extent, nodeDest);
 
@@ -144,36 +158,46 @@ export default class WaterLayer extends itowns.GeometryLayer {
             requester: node
         };
 
+        const displacementScale = this.displacementScale;
+        const displacementBias = this.displacementBias;
+        const heightScale = this.heightScale;
+        const heightBias = this.heightBias;
+
         return context.scheduler.execute(command)
-        .then(function(meshes: Array<THREE.Mesh>) {
+        .then(function(context: Array<Array<THREE.Texture>>) {
+            const displacementMap = context[0][0];
+            const heightMap = context[0][1];
+
             // Fetch, parse and convert were successful, no need for further
             // updates.
             node.layerUpdateState[layer.id].noMoreUpdatePossible();
 
-            const textureLoader = new THREE.TextureLoader();
-            Promise.all([
-                textureLoader.load('water/flow.jpg'),
-                textureLoader.load('water/normal0.jpg'),
-                textureLoader.load('water/normal1.jpg'),
-            ]).then(([flowMap, normalMap0, normalMap1]) => {
-                const vector3 = new THREE.Vector3();
-                const size = node.geometry.boundingBox?.getSize(vector3);
-                if (size) {
-                    const geometry = new THREE.PlaneGeometry(size.x, size.y);
-                    const mesh = new Water(geometry, {
-                        flowMap, normalMap0, normalMap1
-                    });
-                    mesh.matrixWorld = node.matrixWorld;
-                    const helper = new LinkObject(mesh, layer);
-                    node.link.push(helper);
-                    layer.object3d.add(helper);
-                }
-            });
+            const vector3 = new THREE.Vector3();
+            const size = node.geometry.boundingBox?.getSize(vector3);
+            if (size) {
+                const geometry = new THREE.PlaneGeometry(size.x, size.y, 10, 10);
+                const mesh = new Water2(geometry);
+
+                // heightMap.flipY = true;
+                // heightMap.needsUpdate = true;
+
+                mesh.displacementMap = displacementMap;
+                mesh.heightMap = heightMap;
+                if (heightScale) { mesh.heightScale = heightScale };
+                if (heightBias) { mesh.heightBias = heightBias };
+                if (displacementScale) { mesh.displacementScale = displacementScale };
+                if (displacementBias) { mesh.displacementBias = displacementBias };
+                mesh.matrixWorld = node.matrixWorld;
+
+                // Push to local cache
+                const helper = new LinkObject(mesh, layer);
+                node.link.push(helper);
+                layer.object3d.add(helper);
+            }
         });
     }
 
     override culling() {
-        console.log('culling');
         return false;
     }
 }
