@@ -14,9 +14,18 @@ uniform float heightBias;
 // TODO: Use three.js includes
 varying vec2 vUv;
 
+vec2 rotateUV(vec2 uv, float rotation)
+{
+    float mid = 0.5;
+    return vec2(
+        cos(rotation) * (uv.x - mid) + sin(rotation) * (uv.y - mid) + mid,
+        cos(rotation) * (uv.y - mid) - sin(rotation) * (uv.x - mid) + mid
+    );
+}
+
 void main() {
     // UV transformations
-    vUv = uv;
+    vUv = rotateUV(uv, 3.*PI_HALF);
 
     // Normal transformations
 #include <beginnormal_vertex> // vec3 objectNormal
@@ -24,6 +33,7 @@ void main() {
     // Position transformations
 #include <begin_vertex> // vec3 transformed
 #include <displacementmap_vertex>
+    vUv = rotateUV(uv, PI_HALF);
 #ifdef USE_HEIGHTMAP
     transformed += normalize(objectNormal) * (texture2D(heightMap, vUv).x * heightScale + heightBias);
 #endif
